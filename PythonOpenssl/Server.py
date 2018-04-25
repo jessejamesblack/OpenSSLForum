@@ -7,6 +7,7 @@ port = 12345
 
 
 
+
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ssl_socket = ssl.wrap_socket(server_socket, keyfile="domain.key", certfile="domain.crt", server_side=True, ca_certs=None,do_handshake_on_connect=True, suppress_ragged_eofs=True, ciphers=None)
 
