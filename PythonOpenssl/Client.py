@@ -22,15 +22,17 @@ try:
 	pprint.pprint(cert)
 	print "Connection Accepted\n\n"
 	while (True):
-		you = raw_input("you: ")
-		ssl_socket.send(you)
 		server = ssl_socket.recv(1024)
 		if server == 'q':
 				ssl_socket.close()
 		print server
-except ssl.CertificateError:
+		you = raw_input("Input: ")
+		ssl_socket.send(you)
+except ssl.CertificateError as e:
 	print "Certification failed"
 
+
+	
 
 
 
