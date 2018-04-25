@@ -3,7 +3,7 @@ import socket
 
 
 #ip  = socket.gethostbyname(socket.gethostname())
-ip = 'localhost'
+ip = '128.6.13.206'
 port = 12345
 
 
