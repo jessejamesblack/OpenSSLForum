@@ -2,8 +2,7 @@ import ssl
 import socket
 
 
-#ip  = socket.gethostbyname(socket.gethostname())
-ip = 'localhost'
+ip  = socket.gethostbyname(socket.gethostname())
 port = 12345
 
 
