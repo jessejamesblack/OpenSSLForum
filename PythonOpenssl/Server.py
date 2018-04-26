@@ -2,7 +2,10 @@ import ssl
 import socket
 import thread
 import hashlib, uuid
+from threading import Lock
 
+
+threadLock = Lock()
 
 SALT = 'a20330547b594ce1b60aa2f1c57cc968'
 
@@ -34,7 +37,17 @@ def client_connection(client_socket, client_address):
 		print u_p
 		print hashed_info
 
-		client_socket.send("Retrieving the groups....")
+		#append hashed information to the file
+		threadLock.acquire()
+
+		temp = open("user.txt", "a")
+		temp.write(hashed_info)
+		temp.close()
+
+		threadLock.release()
+
+
+
 		client = ""
 
 	while (True):
@@ -78,8 +91,8 @@ print "\nFile Data Finished -----------------------------------------------"
 #finished retrieving data from files
 
 
-#ip  = socket.gethostbyname(socket.gethostname())
-ip = 'localhost'
+ip  = socket.gethostbyname(socket.gethostname())
+#ip = 'localhost'
 port = 12345
 
 
