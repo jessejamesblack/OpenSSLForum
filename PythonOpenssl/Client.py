@@ -28,6 +28,7 @@ try:
 		print server
 		you = raw_input("Input: ")
 		ssl_socket.send(you)
+		
 except ssl.CertificateError as e:
 	print "Certification failed"
 
