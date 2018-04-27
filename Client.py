@@ -53,10 +53,12 @@ try:
     			ssl_socket.close()
 			break
 
-		if you.lower().find("get") == -1:
+		if (you.lower().find("get") or you.lower().find("post")) == -1:
     			print "Incorrect syntax."
-			if you.lower().find("post") == -1:
-    				print "Incorrect syntax."
+				#needs to be fixed hangs without the break
+				break
+			#if you.lower().find("post") == -1:
+    				#print "Incorrect syntax."
 		
 		if you.lower().find("post") == 0:
 				ssl_socket.send(you + " " + time.ctime())
