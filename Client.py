@@ -64,8 +64,7 @@ try:
 
 		if you.lower() == "end":
 			ssl_socket.send("end")
-    			ssl_socket.close()
-			break
+    			##ssl_socket.close()
 	
 		
 
@@ -77,21 +76,28 @@ try:
 			group_name = response[1]
 			message = "'None"
 		
-			i = 2
-	
-			while i < response.__len__():
+			if (response[2].strip().__len__() < 1):
 
-				if ( i == 2) :
-					message = "'" + response[i]
-				else:
-					message += ","+response[i]
-				i +=1
+				#empty message
+				print "MESSAGE CANNOT BE EMPTY"
+				wrong_input = True
+			else:
+
+				i = 2
+	
+				while i < response.__len__():
+
+					if ( i == 2) :
+						message = "'" + response[i]
+					else:
+						message += ","+response[i]
+					i +=1
 				
 
-			message += "'	" + username + "  " + time.ctime()
-			print message
+				message += "'	" + username + "  " + time.ctime()
+				print message
 			
-			ssl_socket.send(response[0] + "," + group_name + "," + message)
+				ssl_socket.send(response[0] + "," + group_name + "," + message)
 		else:
 
 			print "\tINVALID FORMAT FOR YOUR COMMAND"

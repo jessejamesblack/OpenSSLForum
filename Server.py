@@ -108,34 +108,39 @@ def client_connection(client_socket, client_address):
 	client = client_socket.recv(2000)
 	client = client.lower()
 
-	while (client != "end"):
+	while (True):
 
 	
 		response = client.split(",")
 		#print response
 		method = response[0]
-		group_name = response[1]
+		
 
-		if (method == "get"):
+		if client == "end":
+			print  "ends: " , client_address
+			client_socket.send("\tYou Session Ended. You Could Log Back in By Simply USING ANY OF THE COMMANDS GET OR POST")
 
-			
+		elif (method == "get"):
+
+			group_name = response[1]
 			g = validate_group_name(group_name)
 			if (g != None):
 				
-				print "Sending Messages For Group: " , group_name
+				print "Sending Messages For Group: " , group_name, "TO: " , client_address
 				new_message = "None"
 				new_message = g.getMessages()
-				client_socket.send(new_message)
+				client_socket.send(new_message + "\n\tGROUP NAMES:\n" +groups_name )
 			else:
 
-				client_socket.send("Group Name Invalid")
+				client_socket.send("Group Name Invalid" + "\n\tGROUP NAMES:\n" +groups_name)
 			
 		elif (method == "post"):
 	
+			group_name = response[1]
 			g = validate_group_name(group_name)
 			if (g != None):
 				
-				print "Adding Message to the group: " , group_name
+				print "Adding Message to the group: " , group_name, " BY: " , client_address
 
 
 				message_n = ""
@@ -159,15 +164,15 @@ def client_connection(client_socket, client_address):
 				h.write_group_content(groups)
 				threadLock.release()
 
-				client_socket.send("Messaage Added Successfully ==> " + message_n)
+				client_socket.send("Messaage Added Successfully ==> " + message_n + "\n\tGROUP NAMES:\n" +groups_name)
 			else:
 
-				client_socket.send("Group Name Invalid")
+				client_socket.send("Group Name Invalid" + "\n\tGROUP NAMES:\n" +groups_name)
 			
 		
 		else:
 		
-			client_socket.send("Unrecognized Command")
+			client_socket.send("Unrecognized Command" + "\n\tGROUP NAMES:\n" +groups_name)
 			client_socket.send("\n" +message)
 
 		client = client_socket.recv(2000)
