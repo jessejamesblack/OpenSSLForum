@@ -5,7 +5,7 @@ import hashlib, uuid
 from threading import Lock
 import Group as g
 import helper as h
-
+import os.path
 
 #all group information in "groups" and all the users information in "users"
 groups = []
@@ -13,7 +13,7 @@ users = []
 groups_name= ""
 threadLock = Lock()
 SALT = 'a20330547b594ce1b60aa2f1c57cc968'
-message  = "GET,<group_name> //gets all messages from the specified group.\nPOST,<group_name>,<message> // posts the message on the specified group\nEND //end my session with the server"
+message  = "\tGET,<group_name> //gets all messages from the specified group.\n\tPOST,<group_name>,<message> // posts the message on the specified group\n\tEND //end my session with the server"
 
 def update_group(group):
 
@@ -95,6 +95,8 @@ def client_connection(client_socket, client_address):
 		temp.write(hashed_info + "\n")
 		temp.close()
 		threadLock.release()
+		#append to the user array
+		users.append(hashed_info)
 
 	
 
@@ -110,6 +112,7 @@ def client_connection(client_socket, client_address):
 
 	
 		response = client.split(",")
+		#print response
 		method = response[0]
 		group_name = response[1]
 
@@ -120,7 +123,9 @@ def client_connection(client_socket, client_address):
 			if (g != None):
 				
 				print "Sending Messages For Group: " , group_name
-				client_socket.send(g.getMessages())
+				new_message = "None"
+				new_message = g.getMessages()
+				client_socket.send(new_message)
 			else:
 
 				client_socket.send("Group Name Invalid")
@@ -131,7 +136,22 @@ def client_connection(client_socket, client_address):
 			if (g != None):
 				
 				print "Adding Message to the group: " , group_name
-				g.addGroupMessage(response[2])
+
+
+				message_n = ""
+				i = 2
+				while  i < response.__len__():
+
+					if (i == 2):
+
+						message_n = response[i]
+					else:
+
+						message_n += "," + response[i]
+					i +=1
+		
+				print message_n
+				g.addGroupMessage(message_n)
 
 				#updating the files
 				threadLock.acquire()
@@ -139,7 +159,7 @@ def client_connection(client_socket, client_address):
 				h.write_group_content(groups)
 				threadLock.release()
 
-				client_socket.send("Messaage Added Successfully ==> " + response[2])
+				client_socket.send("Messaage Added Successfully ==> " + message_n)
 			else:
 
 				client_socket.send("Group Name Invalid")
@@ -163,16 +183,40 @@ def client_connection(client_socket, client_address):
 		
 
 
-#retrieving data from files and formatting it properly
-groups = h.read_group_content(groups)
-users_f = open("user.txt")
+#checking if the files exist : user.txt and groups.txt
 
+user_check = os.path.isfile("user.txt")
+group_check = os.path.isfile("groups.txt")
 
-user_data = users_f.readlines()
-users_f.close()
-for line in user_data:
+if user_check == False:
 
-	users.append(line.strip())
+	#create a user file 
+	user_create = open("user.txt", "w")
+	user_create.close()
+
+else:
+
+	users_f = open("user.txt")
+	user_data = users_f.readlines()
+	users_f.close()
+	for line in user_data:
+
+		users.append(line.strip())
+	
+
+if group_check == False:
+
+	#create a groups file
+	#add FOOD and CLASS group in there with #EOF
+	
+	groups = [g.Group("FOOD") , g.Group("CLASS")]
+	h.write_group_content(groups)
+else:
+
+	#retrieving data from files and formatting it properly
+	groups = h.read_group_content(groups)
+	
+	
 
 for group in groups:
 
@@ -184,15 +228,11 @@ for group in groups:
 #print users
 #print "\nFile Data Retrieved -----------------------------------------------"
 #finished retrieving data from files
-'''
-if True:
 
-	exit(0)
-'''
 
 ip  = socket.gethostbyname(socket.gethostname())
 #ip = 'localhost'
-port = 13333
+port = 12345
 
 
 

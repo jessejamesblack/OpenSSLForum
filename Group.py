@@ -14,10 +14,18 @@ class Group:
 
     def getMessages(self):
 
-	output = ""
+	output = "NONE"
+	i=0
 	for m in self.messages:
 	
-		output += m + "\n"
+		if i==0:
+			
+			output = "\t" + m + "\n"
+			i+=1
+		else:
+
+			output += "\t" +  m + "\n"
+
 
 	return output
 
