@@ -192,7 +192,7 @@ if True:
 
 ip  = socket.gethostbyname(socket.gethostname())
 #ip = 'localhost'
-port = 12345
+port = 13333
 
 
 

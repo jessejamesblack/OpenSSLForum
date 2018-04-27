@@ -1,10 +1,12 @@
 import ssl
 import socket
 import pprint
+import re
+import time
 
-#ip  = socket.gethostbyname(socket.gethostname())
-ip = '128.6.13.206'
-port = 12345
+ip  = socket.gethostbyname(socket.gethostname())
+#ip = '128.6.13.206'
+port = 13333
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ssl_socket = ssl.wrap_socket(server_socket, keyfile=None, certfile=None, server_side=False, 
@@ -46,12 +48,23 @@ try:
 	while (True):
 		
 		you = raw_input("Your Command$> ")
-		
-		ssl_socket.send(you)
-		if you.lower() == "end":
 
-			ssl_socket.close()
+		if you.lower() == "end":
+    			ssl_socket.close()
 			break
+
+		if you.lower().find("get") == -1:
+    			print "Incorrect syntax."
+			if you.lower().find("post") == -1:
+    				print "Incorrect syntax."
+		
+		if you.lower().find("post") == 0:
+				ssl_socket.send(you + " " + time.ctime())
+
+		if you.lower().find("get") == 0:
+    			ssl_socket.send(you)
+		
+		
 
 		server = ssl_socket.recv(1024)
 		print server
